@@ -1,7 +1,7 @@
 import * as sql from '../sql/index.js';
 class Converter {
-    option = null;
     constructor(option) {
+        this.option = null;
         this.option = option || {};
         this.option.ignoreKeys = option.ignoreKeys || [];
     }

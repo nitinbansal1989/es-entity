@@ -1,7 +1,7 @@
 export default class Connection {
-    handler = null;
-    conn = null;
     constructor(handler, conn) {
+        this.handler = null;
+        this.conn = null;
         this.handler = handler;
         this.conn = conn;
     }

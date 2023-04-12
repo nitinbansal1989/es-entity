@@ -3,16 +3,16 @@ import Command from './types/Command.js';
 import Expression from './Expression.js';
 import Collection from './Collection.js';
 class Statement extends INode {
-    command = null;
-    columns = new Array();
-    values = new Array();
-    collection = new Collection();
-    where = new Expression();
-    groupBy = new Array();
-    orderBy = new Array();
-    limit = new Expression();
     constructor() {
         super();
+        this.command = null;
+        this.columns = new Array();
+        this.values = new Array();
+        this.collection = new Collection();
+        this.where = new Expression();
+        this.groupBy = new Array();
+        this.orderBy = new Array();
+        this.limit = new Expression();
     }
     eval(handler) {
         if (!handler) {

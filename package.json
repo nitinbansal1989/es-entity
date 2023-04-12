@@ -1,12 +1,16 @@
 {
 	"name": "es-entity",
-	"version": "2.5.1",
+	"version": "2.5.5",
 	"description": "ORM framework for Node js based on Ecmascript 6 and Typescript.",
-	"type": "module",
-	"main": "./dist/index.js",
 	"types": "./src/index.ts",
+	"exports": {
+		".": {
+			"import": "./dist/index.js",
+			"require": "./cjs/index.js"
+		}
+	},
 	"scripts": {
-		"build": "tsc -p ./tsconfig.json",
+		"build": "tsc -p ./tsconfig.ejs.json && tsc -p ./tsconfig.cjs.json",
 		"test": "echo \"Error: no test specified\" && exit 0"
 	},
 	"repository": {

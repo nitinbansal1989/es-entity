@@ -2,11 +2,11 @@ import * as bean from '../bean/index.js';
 import Handler from './Handler.js';
 import Connection from '../Connection.js';
 export default class Mysql extends Handler {
-    handlerName = 'mysql';
-    driver = null;
-    connectionPool = null;
     constructor(config) {
         super();
+        this.handlerName = 'mysql';
+        this.driver = null;
+        this.connectionPool = null;
         this.config = config;
     }
     async init() {

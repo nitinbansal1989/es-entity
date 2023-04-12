@@ -1,8 +1,10 @@
 export default class ColumnInfo {
-    field = '';
-    type = null;
-    nullable = false;
-    primaryKey = false;
-    default = '';
-    extra = '';
+    constructor() {
+        this.field = '';
+        this.type = null;
+        this.nullable = false;
+        this.primaryKey = false;
+        this.default = '';
+        this.extra = '';
+    }
 }

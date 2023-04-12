@@ -1,18 +1,18 @@
 export class FieldMapping {
-    fieldName = null;
-    colName = null;
-    type = null;
-    primaryKey = false;
     constructor(data) {
+        this.fieldName = null;
+        this.colName = null;
+        this.type = null;
+        this.primaryKey = false;
         Object.assign(this, data);
     }
 }
 export class EntityMapping {
-    name = '';
-    entityName = '';
-    fields = new Array();
-    foreignRels = new Array();
     constructor(data) {
+        this.name = '';
+        this.entityName = '';
+        this.fields = new Array();
+        this.foreignRels = new Array();
         if (data) {
             this.name = data.name;
             this.entityName = data.entityName;

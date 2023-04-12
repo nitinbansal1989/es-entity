@@ -2,11 +2,11 @@ import * as bean from '../bean/index.js';
 import Handler from './Handler.js';
 import Connection from '../Connection.js';
 export default class SQlite extends Handler {
-    handlerName = 'sqlite';
-    driver = null;
-    connectionPool = null;
     constructor(config) {
         super();
+        this.handlerName = 'sqlite';
+        this.driver = null;
+        this.connectionPool = null;
     }
     async init() {
         this.driver = this.config.driver.verbose() ?? (await import('sqlite3')).verbose();

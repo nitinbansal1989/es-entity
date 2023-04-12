@@ -1,15 +1,15 @@
 import INode from './INode.js';
 import Join from './types/Join.js';
 class Collection extends INode {
-    colAlias = null;
-    value = null;
-    stat = null;
-    leftColl = null;
-    rightColl = null;
-    join = null;
-    alias = null;
     constructor() {
         super();
+        this.colAlias = null;
+        this.value = null;
+        this.stat = null;
+        this.leftColl = null;
+        this.rightColl = null;
+        this.join = null;
+        this.alias = null;
     }
     eval(handler) {
         let res = null;

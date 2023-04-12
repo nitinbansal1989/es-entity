@@ -1,9 +1,9 @@
 import LinkSet from '../collection/LinkSet.js';
 class LinkArrayType {
-    linkSet = null;
-    applied = false;
-    _value = null;
     constructor(entityType, foreignFunc) {
+        this.linkSet = null;
+        this.applied = false;
+        this._value = null;
         this.linkSet = new LinkSet(entityType, foreignFunc);
     }
     bind(context) {

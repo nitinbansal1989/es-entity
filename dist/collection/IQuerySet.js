@@ -1,7 +1,8 @@
 import * as sql from '../sql/index.js';
 class IQuerySet {
-    context;
-    stat = null;
+    constructor() {
+        this.stat = null;
+    }
     innerJoin(coll, param) {
         return this.join(coll, param, sql.types.Join.InnerJoin);
     }

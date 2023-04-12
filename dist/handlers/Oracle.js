@@ -3,11 +3,11 @@ import Handler from './Handler.js';
 import * as sql from '../sql/index.js';
 import Connection from '../Connection.js';
 export default class Oracle extends Handler {
-    handlerName = 'oracle';
-    connectionPool = null;
-    driver = null;
     constructor(config) {
         super();
+        this.handlerName = 'oracle';
+        this.connectionPool = null;
+        this.driver = null;
         this.config = config;
     }
     async init() {

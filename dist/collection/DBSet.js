@@ -8,17 +8,15 @@ import * as Mapping from '../Mapping.js';
 import IQuerySet from './IQuerySet.js';
 import QuerySet from './QuerySet.js';
 class DBSet extends IQuerySet {
-    entityType;
-    options = null;
-    mapping = new Mapping.EntityMapping();
-    columns = null;
     constructor(entityType, options) {
         super();
+        this.options = null;
+        this.mapping = new Mapping.EntityMapping();
         this.entityType = entityType;
-        this.options = options || {};
+        this.options = options;
         this.options.entityName = this.options.entityName || this.entityType.name;
     }
-    async bind() {
+    bind() {
         let filePath = null;
         if (this.options.entityPath) {
             filePath = this.options.entityPath;
@@ -34,69 +32,57 @@ class DBSet extends IQuerySet {
             this.mapping = new Mapping.EntityMapping();
             this.mapping.entityName = this.options.entityName;
             this.mapping.name = Case.snake(this.options.entityName);
-            this.columns = await this.context.handler.getTableInfo(this.mapping.name);
             let obj = new this.entityType();
             let keys = Reflect.ownKeys(obj);
             keys.forEach(key => {
                 let field = Reflect.get(obj, key);
                 if (field instanceof sql.Field) {
-                    this.bindField(key.toString(), field);
+                    let primaryKey = this.options.primaryKeys.includes(key.toString());
+                    this.bindField(key.toString(), field, primaryKey);
                 }
             });
         }
         return this;
     }
-    bindField(key, field) {
+    bindField(key, field, primaryKey) {
         let colName = Case.snake(key);
-        let column = this.columns.filter(col => {
-            return col.field == colName;
-        })[0];
         try {
-            if (!column) {
-                throw new Error(`Column: ${colName} not found in Table: ${this.mapping.name}`);
-            }
             let fieldMapping = new Mapping.FieldMapping({
                 fieldName: key,
                 colName: colName
             });
-            fieldMapping.type = this.checkColumnType(column, field);
-            if (column.primaryKey) {
-                fieldMapping.primaryKey = true;
-            }
+            fieldMapping.type = this.checkColumnType(field);
+            fieldMapping.primaryKey = primaryKey;
             this.mapping.fields.push(fieldMapping);
         }
         catch (err) {
             this.context.log(err);
         }
     }
-    checkColumnType(column, field) {
-        if (column.type == bean.ColumnType.STRING && field instanceof types.String) {
+    checkColumnType(field) {
+        if (field instanceof types.String) {
             return 'string';
         }
-        else if (column.type == bean.ColumnType.NUMBER && field instanceof types.Number) {
+        else if (field instanceof types.Number) {
             return 'number';
         }
-        else if (column.type == bean.ColumnType.NUMBER && field instanceof types.BigInt) {
+        else if (field instanceof types.BigInt) {
             return 'bigint';
         }
-        else if (column.type == bean.ColumnType.BOOLEAN && field instanceof types.Boolean) {
+        else if (field instanceof types.Boolean) {
             return 'boolean';
         }
-        else if (column.type == bean.ColumnType.DATE && field instanceof types.Date) {
+        else if (field instanceof types.Date) {
             return 'date';
         }
-        else if (column.type == bean.ColumnType.BINARY && field instanceof types.Binary) {
+        else if (field instanceof types.Binary) {
             return 'binary';
         }
-        else if (column.type == bean.ColumnType.JSON && field instanceof types.Json) {
+        else if (field instanceof types.Json) {
             return 'jsonObject';
         }
-        else if (field instanceof types.String) {
-            this.context.log(`Type not found for Column: ${column.field} in Table:${this.mapping.name}. Using default string type.`);
-            return 'string';
-        }
         else {
-            throw new Error(`Type mismatch found for Column: ${column.field} in Table:${this.mapping.name}`);
+            throw new Error(`Type mismatch found for column in Table:${this.mapping.name}`);
         }
     }
     getEntityType() {

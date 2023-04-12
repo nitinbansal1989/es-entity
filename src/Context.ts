@@ -37,10 +37,10 @@ export default class Context {
 		await Promise.all(Reflect.ownKeys(this).filter(key => {
 			let o: any = Reflect.get(this, key);
 			return o instanceof DBSet;
-		}, this).map(async key => {
+		}, this).map(key => {
 			let obj = (<DBSet<any>>Reflect.get(this, key));
 			obj.context = this;
-			obj = await obj.bind();
+			obj = obj.bind();
 			this.dbSetMap.set(obj.getEntityType(), obj);
 		}));
 	}

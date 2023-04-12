@@ -1,4 +1,6 @@
 class INode {
-    args = new Array();
+    constructor() {
+        this.args = new Array();
+    }
 }
 export default INode;

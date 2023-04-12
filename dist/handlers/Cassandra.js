@@ -1,9 +1,9 @@
 import Handler from './Handler.js';
 export default class Cassandra extends Handler {
-    handlerName = 'cassandra';
-    driver = null;
     constructor(config) {
         super();
+        this.handlerName = 'cassandra';
+        this.driver = null;
     }
     async init() { }
     async getConnection() { return null; }

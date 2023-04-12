@@ -2,11 +2,11 @@ import * as bean from '../bean/index.js';
 import Handler from './Handler.js';
 import Connection from '../Connection.js';
 export default class PostgreSql extends Handler {
-    handlerName = 'postgresql';
-    driver = null;
-    connectionPool = null;
     constructor(config) {
         super();
+        this.handlerName = 'postgresql';
+        this.driver = null;
+        this.connectionPool = null;
         this.config = config;
     }
     async init() {

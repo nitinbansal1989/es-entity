@@ -11,8 +11,9 @@ import IQuerySet from './IQuerySet.js';
 import QuerySet from './QuerySet.js';
 
 interface IOptions {
+	primaryKeys: string[];
 	entityName?: string;
-	entityPath?: string,
+	entityPath?: string;
 }
 
 class DBSet<T extends Object> extends IQuerySet<T> {
@@ -21,18 +22,18 @@ class DBSet<T extends Object> extends IQuerySet<T> {
 
 	mapping: Mapping.EntityMapping = new Mapping.EntityMapping();
 
-	private columns: bean.ColumnInfo[] = null;
+	// private columns: bean.ColumnInfo[] = null;
 
-	constructor(entityType: types.IEntityType<T>, options?: IOptions) {
+	constructor(entityType: types.IEntityType<T>, options: IOptions) {
 		super();
 
 		this.entityType = entityType;
-		this.options = options || {};
+		this.options = options;
 
 		this.options.entityName = this.options.entityName || this.entityType.name;
 	}
 
-	async bind() {
+	bind() {
 		let filePath: string = null;
 		if (this.options.entityPath) {
 			filePath = this.options.entityPath;
@@ -48,7 +49,7 @@ class DBSet<T extends Object> extends IQuerySet<T> {
 			this.mapping.name = Case.snake(this.options.entityName);
 
 			// get info from describe db
-			this.columns = await this.context.handler.getTableInfo(this.mapping.name);
+			// this.columns = await this.context.handler.getTableInfo(this.mapping.name);
 
 			let obj = new this.entityType();
 			let keys = Reflect.ownKeys(obj);
@@ -57,55 +58,51 @@ class DBSet<T extends Object> extends IQuerySet<T> {
 
 				// Bind Fields
 				if (field instanceof sql.Field) {
-					this.bindField(key.toString(), field);
+					let primaryKey = this.options.primaryKeys.includes(key.toString());
+					this.bindField(key.toString(), field, primaryKey);
 				}
 			});
 		}
 		return this;
 	}
 
-	private bindField(key: string, field: sql.Field<any>) {
+	private bindField(key: string, field: sql.Field<any>, primaryKey: boolean) {
 		let colName = Case.snake(key);
-		let column = this.columns.filter(col => {
-			return col.field == colName;
-		})[0];
+		// let column = new bean.ColumnInfo();
 
 		try {
-			if (!column) {
-				throw new Error(`Column: ${colName} not found in Table: ${this.mapping.name}`);
-			}
+			// if (!column) {
+			// 	throw new Error(`Column: ${colName} not found in Table: ${this.mapping.name}`);
+			// }
 			let fieldMapping = new Mapping.FieldMapping({
 				fieldName: key,
 				colName: colName
 			});
-			fieldMapping.type = this.checkColumnType(column, field);
-			if (column.primaryKey) { fieldMapping.primaryKey = true; }
+			fieldMapping.type = this.checkColumnType(field);
+			fieldMapping.primaryKey = primaryKey;
 			this.mapping.fields.push(fieldMapping);
 		} catch (err) {
 			this.context.log(err);
 		}
 	}
 
-	private checkColumnType(column: bean.ColumnInfo, field: sql.Field<any>) {
-		if (column.type == bean.ColumnType.STRING && field instanceof types.String) {
+	private checkColumnType(field: sql.Field<any>) {
+		if (field instanceof types.String) {
 			return 'string';
-		} else if (column.type == bean.ColumnType.NUMBER && field instanceof types.Number) {
+		} else if (field instanceof types.Number) {
 			return 'number';
-		} else if (column.type == bean.ColumnType.NUMBER && field instanceof types.BigInt) {
+		} else if (field instanceof types.BigInt) {
 			return 'bigint';
-		} else if (column.type == bean.ColumnType.BOOLEAN && field instanceof types.Boolean) {
+		} else if (field instanceof types.Boolean) {
 			return 'boolean';
-		} else if (column.type == bean.ColumnType.DATE && field instanceof types.Date) {
+		} else if (field instanceof types.Date) {
 			return 'date';
-		} else if (column.type == bean.ColumnType.BINARY && field instanceof types.Binary) {
+		} else if (field instanceof types.Binary) {
 			return 'binary';
-		} else if (column.type == bean.ColumnType.JSON && field instanceof types.Json) {
+		} else if (field instanceof types.Json) {
 			return 'jsonObject';
-		} else if (field instanceof types.String) {
-			this.context.log(`Type not found for Column: ${column.field} in Table:${this.mapping.name}. Using default string type.`);
-			return 'string';
 		} else {
-			throw new Error(`Type mismatch found for Column: ${column.field} in Table:${this.mapping.name}`);
+			throw new Error(`Type mismatch found for column in Table:${this.mapping.name}`);
 		}
 	}
 

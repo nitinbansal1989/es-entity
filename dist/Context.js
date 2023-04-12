@@ -1,13 +1,11 @@
 import DBSet from './collection/DBSet.js';
 import getHandler from './handlers/getHandler.js';
 export default class Context {
-    _handler;
-    _entityPath;
-    connection = null;
-    logger = null;
-    dbSetMap = new Map();
-    config = null;
     constructor(config) {
+        this.connection = null;
+        this.logger = null;
+        this.dbSetMap = new Map();
+        this.config = null;
         this.config = config;
         if (!this.config.dbConfig) {
             throw new Error('Database Config Not Found');
@@ -26,10 +24,10 @@ export default class Context {
         await Promise.all(Reflect.ownKeys(this).filter(key => {
             let o = Reflect.get(this, key);
             return o instanceof DBSet;
-        }, this).map(async (key) => {
+        }, this).map(key => {
             let obj = Reflect.get(this, key);
             obj.context = this;
-            obj = await obj.bind();
+            obj = obj.bind();
             this.dbSetMap.set(obj.getEntityType(), obj);
         }));
     }

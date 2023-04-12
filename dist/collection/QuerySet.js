@@ -2,10 +2,10 @@ import * as sql from '../sql/index.js';
 import IQuerySet from './IQuerySet.js';
 import JoinQuerySet from './JoinQuerySet.js';
 class QuerySet extends IQuerySet {
-    dbSet = null;
-    alias = null;
     constructor(dbSet) {
         super();
+        this.dbSet = null;
+        this.alias = null;
         if (dbSet) {
             this.bind(dbSet);
         }

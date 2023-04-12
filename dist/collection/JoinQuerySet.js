@@ -1,10 +1,10 @@
 import IQuerySet from './IQuerySet.js';
 import * as sql from '../sql/index.js';
 class JoinQuerySet extends IQuerySet {
-    mainSet = null;
-    joinSet = null;
     constructor(mainSet, joinSet, joinType, expr) {
         super();
+        this.mainSet = null;
+        this.joinSet = null;
         this.mainSet = mainSet;
         this.context = mainSet.context;
         this.joinSet = joinSet;

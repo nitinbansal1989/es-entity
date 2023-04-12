@@ -1,6 +1,8 @@
 export default class ResultSet {
-    rowCount = 0;
-    id = null;
-    rows = null;
-    error = null;
+    constructor() {
+        this.rowCount = 0;
+        this.id = null;
+        this.rows = null;
+        this.error = null;
+    }
 }
